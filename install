@@ -1,0 +1,161 @@
+Installation
+Prerequisites:
+Windows or Linux machine.
+Python 3.x installed.
+Google Chrome or Firefox for running the browser extension.
+Windows Sandbox or Firejail installed for sandboxing.
+
+Step 1: Clone the Repository
+git clone https://github.com/your-username/agent-zero-blue-shield.git
+cd agent-zero-blue-shield
+
+Step 2: Install Dependencies
+For Linux:
+
+bash
+Copy code
+sudo apt-get install firejail
+sudo apt-get install tor
+For Windows: Ensure Windows Sandbox is enabled:
+
+Go to Control Panel > Programs > Turn Windows Features On or Off.
+Check Windows Sandbox and click OK.
+
+Usage
+Setting up the Browser Extension
+Navigate to the extension/ directory.
+
+Load the browser extension in developer mode:
+
+Chrome: Go to chrome://extensions/ and enable Developer Mode. Click Load Unpacked and select the extension/ folder.
+Firefox: Go to about:debugging#/runtime/this-firefox and click Load Temporary Add-on, then select extension/manifest.json.
+The extension provides a drag-and-drop interface where you can assign tasks to agents.
+
+Setting up the Native Host
+The native host allows the browser extension to communicate securely with your local system.
+
+Create the Native Messaging Host JSON file:
+For Windows, create com.agent_zero.manager.json in: C:\Users\<your-user>\AppData\Local\Google\Chrome\User Data\NativeMessagingHosts.
+
+For Linux, create com.agent_zero.manager.json in: /etc/opt/chrome/native-messaging-hosts/.
+
+Example:json
+
+{
+  "name": "com.agent_zero.manager",
+  "description": "Agent Zero Native Messaging Host",
+  "path": "C:\\path\\to\\agent_manager.py",  # Path to Python script
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://<your-extension-id>/"
+  ]
+}
+
+Run the Python Native Host:
+
+bash
+python agent_manager.py
+
+Running Agents in Sandboxes
+Windows Sandbox:
+
+Define a .wsb configuration file for sandboxed agent execution:
+xml
+Copy code
+<Configuration>
+  <VGpu>Disable</VGpu>
+  <Networking>Enable</Networking>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\path\to\agents</HostFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>C:\path\to\python.exe C:\path\to\agent_manager.py</Command>
+  </LogonCommand>
+</Configuration>
+Execute the sandbox:
+bash
+Copy code
+C:\Windows\System32\WindowsSandbox.exe C:\path\to\agent_sandbox.wsb
+Linux Firejail:
+
+Create a Firejail profile for agents:
+bash
+Copy code
+sudo nano /etc/firejail/agent-samantha.profile
+Profile example:
+
+text
+Copy code
+noblacklist /home/user/agents/
+seccomp
+caps.drop all
+noexec /
+Run the agent inside Firejail:
+bash
+Copy code
+firejail --profile=/etc/firejail/agent-samantha.profile python3 /home/user/agents/agent_manager.py
+Security Considerations
+Native Messaging: All communications between the browser extension and local system are done securely via the Native Messaging API, avoiding open WebSockets or external network calls.
+Sandboxed Execution: High-risk tasks run inside isolated environments (Windows Sandbox, Firejail) to prevent unauthorized system access.
+TOR for Anonymity: Tasks requiring internet access (e.g., web scraping or bug bounty testing) can run inside a TOR shell to maintain anonymity.
+Code Snippets
+Python Native Host (agent_manager.py)
+python
+Copy code
+import sys
+import json
+import subprocess
+
+# Helper function to read a message from stdin
+def read_message():
+    raw_length = sys.stdin.read(4)
+    if len(raw_length) == 0:
+        sys.exit(0)
+    message_length = int.from_bytes(raw_length.encode('utf-8'), byteorder='little')
+    message = sys.stdin.read(message_length)
+    return json.loads(message)
+
+# Helper function to send a message to stdout
+def send_message(message):
+    json_message = json.dumps(message)
+    message_length = len(json_message)
+    sys.stdout.write(message_length.to_bytes(4, byteorder='little').decode('utf-8'))
+    sys.stdout.write(json_message)
+    sys.stdout.flush()
+
+# Function to run the agent's task in a sandbox
+def run_in_sandbox(agent):
+    if sys.platform == "win32":
+        sandbox_path = "C:\\path\\to\\sandbox\\agent_sandbox.wsb"
+        subprocess.run(["C:\\Windows\\System32\\WindowsSandbox.exe", sandbox_path])
+        return "Agent ran in Windows Sandbox"
+    elif sys.platform == "linux":
+        subprocess.run(["firejail", "--profile=/etc/firejail/agent-samantha.profile", f"python3 /home/user/agents/{agent}.py"])
+        return "Agent ran in Firejail Sandbox"
+
+while True:
+    message = read_message()
+    agent = message.get("agentName")
+    task = message.get("task")
+    result = run_in_sandbox(agent)
+    send_message(result)
+Browser Extension (background.js)
+javascript
+Copy code
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.command === 'assignAgentTask') {
+    chrome.runtime.sendNativeMessage('com.agent_zero.manager', {
+      agentName: request.agent,
+      task: request.task
+    }, function(response) {
+      console.log('Task Result:', response);
+      sendResponse({result: response});
+    });
+    return true; // Asynchronous response
+  }
+});
+License
+This project is licensed AS private not for public use hasnt been TESTED AT ALL dont try and run this on your computer 
