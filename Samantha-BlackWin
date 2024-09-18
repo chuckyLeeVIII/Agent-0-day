@@ -1,0 +1,52 @@
+Agent Zero - Proactive BlueShield Assistant
+Agent Zero is a proactive BlueShield assistant designed to run locally on your system, executing antivirus, system security tasks, and other automated jobs like mining, web scraping, and bug bounty testing in secure sandbox environments. The goal is to ensure the user's anonymity and keep the system safe through a GUI-driven, task management system.
+
+Table of Contents:
+
+Overview
+Features        
+System Architecture
+Installation
+Usage
+Setting up the Browser Extension
+Running Agents in Sandboxes
+Security Considerations
+Code Snippets
+License
+
+Overview
+
+"Agent Zero" enables local execution of AI agents designed to:
+
+Perform system security tasks: such as antivirus scans, firewall management, and malware checks.Assign tasks to different agents for long-term activities (e.g., mining, bug bounty testing, and scraping).
+Ensure full user anonymity by executing high-risk tasks in isolated environments (e.g., TOR shells, sandboxes).
+This project consists of:
+
+A browser extension:
+that allows users to assign tasks to agents through a drag-and-drop interface.
+
+A native messaging host
+
+that securely connects the browser extension to the local system to trigger agents.
+
+Sandbox environments (Windows Sandbox, Firejail on Linux) to run agents securely, preventing unauthorized access to the system.
+
+Our Main agent is just a modified version of the orgional agent zero framework with the side agents being altered depending on the task I found that if you give the agent a goal and taeach it how to improve efficentc see what tools the agent uses
+In my testing of many differnt types pof agentsive come to learn that a basic uncensored LLM has  ZERO limets a true open open source like hugginfaces BLOB trained on all the data that the othercompanys didnt see fit...
+wrong it should been included and used a datset to contiued teaching   
+Features
+
+Task Assignment via: GUI: A drag-and-drop interface allows easy assignment of tasks to agents.
+Native Host: Communication: The browser extension communicates with the local system securely, avoiding open socket communications.
+Sandboxed Execution: Agents execute tasks inside secure sandboxes to prevent system breaches.
+TOR Support for Anonymity: For high-risk tasks, agents can run inside TOR shells, ensuring complete anonymity.
+System ArchitectureComponents:Browser Extension
+
+Provides the GUI for managing agents and assigning tasks:Sends task assignments to the local system via Native Messaging API.Native Host (Python or Node.js)
+
+Listens for messages from the browser extension and triggers agent execution.
+Executes tasks in sandboxed environments (Windows Sandbox, Firejail on Linux).
+Sandbox Execution:
+
+Tasks are run securely in isolated sandboxes.
+For long-running or high-risk tasks (e.g., web scraping or bug bounty testing), the agent operates within a TOR shell to maintain anonymity AND THAT IF INCASE SELF AWARE EVER DOES OCCOURSE with agent zero framework THE AGENT WILL ROOT" HEADLESS TOR SHELL"  
