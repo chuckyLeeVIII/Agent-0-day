@@ -1,0 +1,89 @@
+System Overview:
+Primary Agent:
+
+Agent Samantha Blackwin – Responsible for overseeing system security and task delegation.
+Locally Hosted using the Ollama model (Lexi-Llama-3-8B-Uncensored-Q5_K_S.gguf).
+Access to Cortana Controls and other system permissions for management and security purposes.
+Supporting Agents:
+
+Other agents with specialized tasks (e.g., document editing, scheduling, development, etc.)
+These agents are assigned specific projects or jobs by Samantha based on the task's nature.
+Key Functionalities:
+
+Drag-and-drop interface for project assignments.
+Agents are “pinned” or assigned to projects via drag-and-drop.
+Agent prompting and responses will refine and perfect tasks.
+Security Consideration: Samantha needs to be installed in a way that locks her to the local system for security.
+
+Proposed GUI Design:
+1. Main Dashboard
+Left Panel:
+A List of Agents (including Samantha Blackwin at the top) showing:
+Agent name.
+Status (active/inactive).
+Assigned project (if any).
+Custom icons for easy recognition.
+Drag-and-drop functionality for assigning agents to projects.
+Middle Panel:
+Project Folders – Representing different ongoing projects.
+Users can drag agents from the left panel onto the project folders to assign them.
+Projects will expand when clicked to show sub-tasks or prompts already assigned.
+Right Panel:
+Prompt Library – You can select from a set of predefined prompts to apply directly to any agent or project.
+Custom prompts can also be created and stored here.
+Bottom Panel:
+Real-time Agent Output/Conversation Window, showing the latest responses from Samantha Blackwin or other agents as they process tasks.
+Logs of all agent assignments and outcomes.
+2. Agent Management:
+A Settings Panel for each agent (accessible by right-clicking the agent):
+Permissions Management for assigning tasks.
+Roles (e.g., document management, code development, scheduling).
+Status (active/idle/working).
+Log of previous task assignments and completions.
+3. Drag-and-Drop Project Assignment
+A drag-and-drop framework where agents can be dragged from the agent list to projects (folders).
+Agents will be notified and automatically start the assigned task.
+You could use libraries like React DnD or Dragula for implementing drag-and-drop functionality in a modern JavaScript framework like React.
+Tech Stack and Frameworks:
+Given that you are using AI agents with likely Python back-end processing, but want a modern and efficient GUI, here are some potential frameworks you could use:
+
+Front-End (GUI):
+
+React (with React DnD for drag-and-drop).
+Electron – This will allow the GUI to run as a standalone desktop application.
+Material-UI or Tailwind CSS for a clean and responsive UI.
+Back-End (Agent Management & Communication):
+
+Python Flask/Django for managing agent communication and task assignments.
+WebSocket API for real-time communication between the agents and the front-end GUI.
+SQLite or PostgreSQL for storing agent data, logs, and project assignments.
+Local Agent Hosting:
+
+The Ollama CLI can be used to run and manage your models locally. Samantha Blackwin can be executed and controlled via Python scripts, with the GUI interacting with these scripts through API calls.
+Detailed Implementation Steps:
+Set up the Core Framework:
+
+Create a new React/Electron app.
+Implement the left panel to dynamically load the list of agents (with drag-and-drop enabled).
+Integrate the Prompt Library:
+
+Store predefined and user-defined prompts in a database (e.g., SQLite).
+Implement the ability to select and attach prompts to agents/tasks.
+Create the Backend Communication Layer:
+
+Write a Python service that will handle agent interaction, task assignments, and prompt responses.
+Use WebSockets to maintain real-time communication between your agents and the GUI.
+Agent Assignment Logic:
+
+When an agent is assigned to a project, trigger an API call to the backend to notify the agent.
+For security, ensure Agent Samantha Blackwin has elevated permissions within the system but is sandboxed from external access.
+Testing & Security:
+
+Ensure Samantha has system control permissions locked down (using system calls to Cortana).
+Test for any vulnerabilities where agents could potentially access unauthorized areas of the system.
+Considerations:
+Security Lockdown:
+You want Samantha to be locked to the system. To achieve this, ensure the local hosting setup restricts any outgoing or incoming connections from unauthorized devices, or consider sandboxing her within a Docker container to keep her isolated but fully functional within your system.
+
+Performance Considerations:
+Running large models locally (like Lexi-Llama) could be resource-heavy, so ensure your system is optimized for running the necessary AI services smoothly alongside the GUI.
